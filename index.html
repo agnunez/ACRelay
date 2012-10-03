@@ -1,0 +1,70 @@
+<html>
+  <head>
+    <title>ACRelay Web Server. AstroCamp.es</title>
+    <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style type=\"text/css\">
+     BODY {  font-family: sans-serif; font-size:62.5%}
+     H1 { font-size: 12pt; text-decoration: underline }
+     P { font-size: 10pt; }
+     TD {vertical-align: middle; font-size: 8pt;}
+    </style>
+
+    <link href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css' rel=stylesheet />
+    <meta http-equiv='Content-Script-Type' content='text/javascript'>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
+    <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js'></script>
+    <style> #slider1,#slider2,#slider3,#slider4,#slider5,#slider6,#slider7,#slider8 { height: 30px; width: 13px; margin: 8px; background: gray;}
+       #relay1,#relay2,#relay3,#relay4,#relay5,#relay6,#relay7,#relay8,#sensor1,#sensor2,#sensor3,#sensor4,#sensor5,#sensor6,#sensor7,#sensor8
+      {color: #FFFFFF; background: gray; padding: 7px; margin: 5; text-align: center; font-size: 14px}
+    </style>
+    <script>
+    setInterval(function(){Test()},1000);
+    function Test() {
+        $.ajax({url: '/test',
+            success: function(data) {
+                var items = [];
+                $.each(data,
+                    function(key, val) {
+                        if(key==0){label='#relay'}else{label='#sensor'}
+                        for (i=1; i<9; i++){
+                            lab=label+i.toString();
+                            if (val[i-1]>0){
+                                $(lab).css({background:"#ED1C24"});
+                                if(key==0){$("#slider"+i.toString()).slider("option", "value", 1);}
+                            }else{
+                                $(lab).css({background:"#9E0B0F"});
+                                if(key==0){$("#slider"+i.toString()).slider("option", "value", 0);}
+                            }
+                        }
+                    }
+                );
+            }
+        });
+    }
+
+    function Relay(r, v){ $.ajax({url: '/set', data: { r: r, v: v} })  }
+    $(document).ready(
+        function(){
+            window.lab='#relay1'; window.rel=1;
+            $('#slider1').slider({orientation: "vertical", min: 0, max:1, stop: function(event, ui){Relay(1,ui.value);}});
+            $('#slider2').slider({orientation: "vertical", min: 0, max:1, stop: function(event, ui){Relay(2,ui.value);}});
+            $('#slider3').slider({orientation: "vertical", min: 0, max:1, stop: function(event, ui){Relay(3,ui.value);}});
+            $('#slider4').slider({orientation: "vertical", min: 0, max:1, stop: function(event, ui){Relay(4,ui.value);}});
+            $('#slider5').slider({orientation: "vertical", min: 0, max:1, stop: function(event, ui){Relay(5,ui.value);}});
+            $('#slider6').slider({orientation: "vertical", min: 0, max:1, stop: function(event, ui){Relay(6,ui.value);}});
+            $('#slider7').slider({orientation: "vertical", min: 0, max:1, stop: function(event, ui){Relay(7,ui.value);}});
+            $('#slider8').slider({orientation: "vertical", min: 0, max:1, stop: function(event, ui){Relay(8,ui.value);}});
+            Test();
+        }        
+    );
+     </script>
+  </head>
+<body bgcolor=#FFBB66>
+<h2>ACRelay Web Server (Local Panel)</h2>
+<table>
+<tr><td id=relay1>R1</td><td id=relay2>R2</td><td id=relay3>R3</td><td id=relay4>R4</td><td id=relay5>R5</td><td id=relay6>R6</td><td id=relay7>R7</td><td id=relay8>R8</td></tr>
+<tr><td><div id=slider1></div></td><td><div id=slider2></div></td><td><div id=slider3></div></td><td><div id=slider4></div></td><td><div id=slider5></div></td><td><div id=slider6></div></td><td><div id=slider7></div></td><td><div id=slider8></div></td></tr>
+<tr><td id=sensor1>S1</td><td id=sensor2>S2</td><td id=sensor3>S3</td><td id=sensor4>S4</td><td id=sensor5>S5</td><td id=sensor6>S6</td><td id=sensor7>S7</td><td id=sensor8>S8</td></tr>
+</table>
+</body>
+</html>
